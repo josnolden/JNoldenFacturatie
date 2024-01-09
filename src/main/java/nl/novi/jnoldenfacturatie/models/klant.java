@@ -12,7 +12,8 @@ public class klant {
     private String achternaam;
     private String mailAdres;
     private String telefoonnummer;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
     private adres klantAdres;
 
     public Long getKlantId() {

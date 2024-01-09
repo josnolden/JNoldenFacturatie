@@ -12,6 +12,8 @@ public class adres {
     private String huisnummerToevoeging;
     private String woonplaats;
     private String land;
+    @OneToOne(mappedBy = "klantAdres")
+    klant klant;
 
     public Long getAdresId() {
         return adresId;

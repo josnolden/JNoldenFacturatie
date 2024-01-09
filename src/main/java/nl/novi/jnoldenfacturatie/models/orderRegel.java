@@ -8,7 +8,6 @@ public class orderRegel {
     @GeneratedValue
     Long orderRegelId;
     @ManyToOne
-    @MapsId("factuurId")
     private factuur basisFactuur;
     @ManyToOne
     private artikel orderArtikel;
