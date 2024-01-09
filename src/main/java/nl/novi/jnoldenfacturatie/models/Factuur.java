@@ -6,12 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-public class factuur {
+public class Factuur {
     @Id
     @GeneratedValue
     Long factuurId;
     @ManyToOne
-    private klant factuurKlant;
+    private Klant factuurKlant;
     private Date factuurDatum;
     private Date betaalDatum;
     private Double subTotaal;
@@ -19,7 +19,7 @@ public class factuur {
     private Double korting;
     private Double totaalPrijs;
     @OneToMany(mappedBy = "basisFactuur")
-    List<orderRegel> orderRegels;
+    List<OrderRegel> orderRegels;
 
     public Long getFactuurId() {
         return factuurId;
@@ -29,11 +29,11 @@ public class factuur {
         this.factuurId = factuurId;
     }
 
-    public klant getFactuurKlant() {
+    public Klant getFactuurKlant() {
         return factuurKlant;
     }
 
-    public void setFactuurKlant(klant factuurKlant) {
+    public void setFactuurKlant(Klant factuurKlant) {
         this.factuurKlant = factuurKlant;
     }
 
@@ -85,11 +85,11 @@ public class factuur {
         this.totaalPrijs = totaalPrijs;
     }
 
-    public List<orderRegel> getOrderRegels() {
+    public List<OrderRegel> getOrderRegels() {
         return orderRegels;
     }
 
-    public void setOrderRegels(List<orderRegel> orderRegels) {
+    public void setOrderRegels(List<OrderRegel> orderRegels) {
         this.orderRegels = orderRegels;
     }
 }

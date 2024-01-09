@@ -3,7 +3,7 @@ package nl.novi.jnoldenfacturatie.models;
 import jakarta.persistence.*;
 
 @Entity
-public class adres {
+public class Adres {
     @Id
     @GeneratedValue
     Long adresId;
@@ -13,7 +13,7 @@ public class adres {
     private String woonplaats;
     private String land;
     @OneToOne(mappedBy = "klantAdres")
-    klant klant;
+    Klant klant;
 
     public Long getAdresId() {
         return adresId;

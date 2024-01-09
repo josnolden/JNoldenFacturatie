@@ -3,7 +3,7 @@ package nl.novi.jnoldenfacturatie.models;
 import jakarta.persistence.*;
 
 @Entity
-public class artikel {
+public class Artikel {
     @Id
     @GeneratedValue
     Long artikelId;

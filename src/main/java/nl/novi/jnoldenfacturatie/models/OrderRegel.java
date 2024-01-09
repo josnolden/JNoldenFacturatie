@@ -3,14 +3,14 @@ package nl.novi.jnoldenfacturatie.models;
 import jakarta.persistence.*;
 
 @Entity
-public class orderRegel {
+public class OrderRegel {
     @Id
     @GeneratedValue
     Long orderRegelId;
     @ManyToOne
-    private factuur basisFactuur;
+    private Factuur basisFactuur;
     @ManyToOne
-    private artikel orderArtikel;
+    private Artikel orderArtikel;
     private Double prijs; //incl. btw
     private Double btw;
 
@@ -22,19 +22,19 @@ public class orderRegel {
         this.orderRegelId = orderRegelId;
     }
 
-    public factuur getBasisFactuur() {
+    public Factuur getBasisFactuur() {
         return basisFactuur;
     }
 
-    public void setBasisFactuur(factuur basisFactuur) {
+    public void setBasisFactuur(Factuur basisFactuur) {
         this.basisFactuur = basisFactuur;
     }
 
-    public artikel getOrderArtikel() {
+    public Artikel getOrderArtikel() {
         return orderArtikel;
     }
 
-    public void setOrderArtikel(artikel orderArtikel) {
+    public void setOrderArtikel(Artikel orderArtikel) {
         this.orderArtikel = orderArtikel;
     }
 

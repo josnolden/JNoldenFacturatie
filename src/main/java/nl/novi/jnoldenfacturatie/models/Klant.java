@@ -3,7 +3,7 @@ package nl.novi.jnoldenfacturatie.models;
 import jakarta.persistence.*;
 
 @Entity
-public class klant {
+public class Klant {
     @Id
     @GeneratedValue
     Long klantId;
@@ -14,7 +14,7 @@ public class klant {
     private String telefoonnummer;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(unique = true)
-    private adres klantAdres;
+    private Adres klantAdres;
 
     public Long getKlantId() {
         return klantId;
@@ -64,11 +64,11 @@ public class klant {
         this.telefoonnummer = telefoonnummer;
     }
 
-    public adres getKlantAdres() {
+    public Adres getKlantAdres() {
         return klantAdres;
     }
 
-    public void setKlantAdres(adres klantAdres) {
+    public void setKlantAdres(Adres klantAdres) {
         this.klantAdres = klantAdres;
     }
 }
