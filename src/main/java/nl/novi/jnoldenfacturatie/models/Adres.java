@@ -12,6 +12,7 @@ public class Adres {
     private String huisnummerToevoeging;
     private String woonplaats;
     private String land;
+
     @OneToOne(mappedBy = "klantAdres")
     Klant klant;
 
@@ -61,5 +62,13 @@ public class Adres {
 
     public void setLand(String land) {
         this.land = land;
+    }
+
+    public Klant getKlant(){
+        return klant;
+    }
+
+    public void setKlant(Klant klant) {
+        this.klant = klant;
     }
 }
