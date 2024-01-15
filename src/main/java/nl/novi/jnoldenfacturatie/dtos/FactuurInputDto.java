@@ -1,7 +1,6 @@
 package nl.novi.jnoldenfacturatie.dtos;
 
 import jakarta.validation.constraints.*;
-
 import java.util.Date;
 
 public class FactuurInputDto {

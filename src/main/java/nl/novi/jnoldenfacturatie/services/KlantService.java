@@ -1,5 +1,7 @@
 package nl.novi.jnoldenfacturatie.services;
 
+import nl.novi.jnoldenfacturatie.dtos.AdresInputDto;
+import nl.novi.jnoldenfacturatie.dtos.KlantInputDto;
 import nl.novi.jnoldenfacturatie.models.Adres;
 import nl.novi.jnoldenfacturatie.models.Klant;
 import nl.novi.jnoldenfacturatie.repositories.AdresRepository;
@@ -16,12 +18,12 @@ public class KlantService {
         this.klantRepository = klantRepository;
     }
 
-    public Long createKlant(Klant klantInput, Adres adresInput){
+    public Long createKlant(KlantInputDto klantInput, AdresInputDto adresInput){
         var klant = new Klant();
         klant.setVoornaam(klantInput.getVoornaam());
         klant.setTussenvoegsel(klantInput.getTussenvoegsel());
         klant.setAchternaam(klantInput.getAchternaam());
-        klant.setMailAdres(klantInput.getMailAdres());
+        klant.setMailAdres(klantInput.getMailadres());
         klant.setTelefoonnummer(klantInput.getTelefoonnummer());
         var adres = new Adres();
         adres.setStraat(adresInput.getStraat());

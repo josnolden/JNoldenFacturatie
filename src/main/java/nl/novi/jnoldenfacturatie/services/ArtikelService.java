@@ -1,4 +1,5 @@
 package nl.novi.jnoldenfacturatie.services;
+import nl.novi.jnoldenfacturatie.dtos.ArtikelInputDto;
 import nl.novi.jnoldenfacturatie.models.Artikel;
 import nl.novi.jnoldenfacturatie.repositories.ArtikelRepository;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ public class ArtikelService {
         this.artikelRepository = repository;
     }
 
-    public Long createArtikel(Artikel artikelInput){
+    public Long createArtikel(ArtikelInputDto artikelInput){
         var artikel = new Artikel();
         artikel.setNaam(artikelInput.getNaam());
         artikel.setCategorie(artikelInput.getCategorie());
