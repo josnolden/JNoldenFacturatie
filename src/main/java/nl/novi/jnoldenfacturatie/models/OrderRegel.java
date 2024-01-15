@@ -11,6 +11,7 @@ public class OrderRegel {
     private Factuur basisFactuur;
     @ManyToOne
     private Artikel orderArtikel;
+    private Integer aantal;
     private Double prijs; //incl. btw
     private Double btw;
 
@@ -36,6 +37,14 @@ public class OrderRegel {
 
     public void setOrderArtikel(Artikel orderArtikel) {
         this.orderArtikel = orderArtikel;
+    }
+
+    public Integer getAantal() {
+        return aantal;
+    }
+
+    public void setAantal(Integer aantal) {
+        this.aantal = aantal;
     }
 
     public Double getPrijs() {
