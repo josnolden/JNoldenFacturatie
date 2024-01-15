@@ -23,9 +23,27 @@ public class KlantController {
         return ResponseEntity.ok().body(klanten);
     }
 
+    @GetMapping("/klanten/{id}")
+    public ResponseEntity<KlantOutputDto> getKlant(@PathVariable("id")Long id){
+        KlantOutputDto klant = klantService.getKlant(id);
+        return ResponseEntity.ok().body(klant);
+    }
+
     @PostMapping("/klanten")
-    public ResponseEntity<Long> createKlant(@Valid @RequestBody KlantInputDto klantInput){
+    public ResponseEntity<String> createKlant(@Valid @RequestBody KlantInputDto klantInput){
         Long id = klantService.createKlant(klantInput);
-        return ResponseEntity.created(null).body(id);
+        return ResponseEntity.created(null).body("Klantnummer: "+id);
+    }
+
+    @PutMapping("/klanten/{id}")
+    public ResponseEntity<KlantOutputDto> updateKlant(@PathVariable("id")Long id, @Valid @RequestBody KlantInputDto klantInput){
+        KlantOutputDto klant = klantService.updateKlant(id, klantInput);
+        return ResponseEntity.ok().body(klant);
+    }
+
+    @DeleteMapping("/klanten/{id}")
+    public ResponseEntity<String> deleteKlant(@PathVariable("id")Long id){
+        klantService.deleteKlant(id);
+        return ResponseEntity.ok().body("Klant verwijderd");
     }
 }

@@ -11,7 +11,7 @@ public class KlantOutputDto extends KlantBaseDto {
     }
 
     public KlantOutputDto(){
-
+        super();
     }
 
     public Long getKlantId() {

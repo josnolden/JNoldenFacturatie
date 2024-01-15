@@ -3,6 +3,7 @@ package nl.novi.jnoldenfacturatie.services;
 import nl.novi.jnoldenfacturatie.dtos.AdresInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantOutputDto;
+import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Adres;
 import nl.novi.jnoldenfacturatie.models.Klant;
 import nl.novi.jnoldenfacturatie.repositories.AdresRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class KlantService {
@@ -31,8 +33,38 @@ public class KlantService {
         return klanten;
     }
 
+    public KlantOutputDto getKlant(Long id){
+        Optional<Klant> optionalKlant = klantRepository.findById(id);
+        if(optionalKlant.isPresent()){
+            return transferKlantToDto(optionalKlant.get());
+        }
+        else {
+            throw new NotFoundException("Deze klant bestaat niet");
+        }
+    }
+
     public Long createKlant(KlantInputDto klantInput){
         Klant klant = new Klant();
+        return saveKlant(klantInput, klant).getKlantId();
+    }
+
+    public KlantOutputDto updateKlant(Long id, KlantInputDto klantInput){
+        Optional<Klant> optionalKlant = klantRepository.findById(id);
+        if(optionalKlant.isPresent()){
+            Klant klant = optionalKlant.get();
+            Klant newKlant = saveKlant(klantInput, klant);
+            return transferKlantToDto(newKlant);
+        }
+        else {
+            throw new NotFoundException("Deze klant bestaat niet");
+        }
+    }
+
+    public void deleteKlant(Long id){
+        klantRepository.deleteById(id);
+    }
+
+    public Klant saveKlant(KlantInputDto klantInput, Klant klant){
         klant.setVoornaam(klantInput.getVoornaam());
         klant.setTussenvoegsel(klantInput.getTussenvoegsel());
         klant.setAchternaam(klantInput.getAchternaam());
@@ -47,8 +79,7 @@ public class KlantService {
         adres.setLand(adresInput.getLand());
         klant.setKlantAdres(adres);
         this.klantRepository.save(klant);
-        //this.adresRepository.save(adres);
-        return klant.getKlantId();
+        return klant;
     }
 
     public KlantOutputDto transferKlantToDto(Klant klantData){

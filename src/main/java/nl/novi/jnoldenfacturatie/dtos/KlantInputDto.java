@@ -16,7 +16,7 @@ public class KlantInputDto extends KlantBaseDto {
     }
 
     public KlantInputDto(){
-
+        super();
     }
 
     public AdresInputDto getAdres() {
