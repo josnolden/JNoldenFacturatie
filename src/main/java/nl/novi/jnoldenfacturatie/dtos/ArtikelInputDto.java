@@ -19,6 +19,10 @@ public class ArtikelInputDto {
         this.categorie = categorie;
     }
 
+    public ArtikelInputDto(){
+
+    }
+
     public String getNaam() {
         return naam;
     }

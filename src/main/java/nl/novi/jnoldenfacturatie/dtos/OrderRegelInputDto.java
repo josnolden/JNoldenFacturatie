@@ -13,6 +13,10 @@ public class OrderRegelInputDto {
         this.aantal = aantal;
     }
 
+    public OrderRegelInputDto(){
+
+    }
+
     public Long getArtikelId() {
         return artikelId;
     }

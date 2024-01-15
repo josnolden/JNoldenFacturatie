@@ -24,6 +24,10 @@ public class FactuurInputDto {
         this.orderRegels = orderRegels;
     }
 
+    public FactuurInputDto(){
+
+    }
+
     public Date getFactuurDatum() {
         return factuurDatum;
     }

@@ -28,6 +28,10 @@ public class AdresInputDto {
         this.land = land;
     }
 
+    public AdresInputDto(){
+
+    }
+
     public String getStraat() {
         return straat;
     }
