@@ -52,8 +52,8 @@ public class KlantService {
         Optional<Klant> optionalKlant = klantRepository.findById(id);
         if(optionalKlant.isPresent()){
             Klant klant = optionalKlant.get();
-            Klant newKlant = saveKlant(klantInput, klant);
-            return transferKlantToDto(newKlant);
+            Klant geupdateKlant = saveKlant(klantInput, klant);
+            return transferKlantToDto(geupdateKlant);
         }
         else {
             throw new NotFoundException("Deze klant bestaat niet");
@@ -61,7 +61,13 @@ public class KlantService {
     }
 
     public void deleteKlant(Long id){
-        klantRepository.deleteById(id);
+        Optional<Klant> optionalKlant = klantRepository.findById(id);
+        if(optionalKlant.isPresent()){
+            klantRepository.deleteById(id);
+        }
+        else {
+            throw new NotFoundException("Deze klant bestaat niet");
+        }
     }
 
     public Klant saveKlant(KlantInputDto klantInput, Klant klant){
