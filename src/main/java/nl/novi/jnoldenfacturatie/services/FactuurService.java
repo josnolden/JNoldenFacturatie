@@ -1,6 +1,6 @@
 package nl.novi.jnoldenfacturatie.services;
-import nl.novi.jnoldenfacturatie.dtos.FactuurInputDto;
-import nl.novi.jnoldenfacturatie.dtos.OrderRegelInputDto;
+import nl.novi.jnoldenfacturatie.dtos.*;
+import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Artikel;
 import nl.novi.jnoldenfacturatie.models.Factuur;
 import nl.novi.jnoldenfacturatie.models.Klant;
@@ -8,29 +8,48 @@ import nl.novi.jnoldenfacturatie.models.OrderRegel;
 import nl.novi.jnoldenfacturatie.repositories.ArtikelRepository;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.KlantRepository;
-import nl.novi.jnoldenfacturatie.repositories.OrderRegelRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FactuurService {
     private FactuurRepository factuurRepository;
-    private OrderRegelRepository orderRegelRepository;
     private KlantRepository klantRepository;
     private ArtikelRepository artikelRepository;
+    private KlantService klantService;
 
-    public FactuurService(FactuurRepository factuurRepository, OrderRegelRepository orderRegelRepository, KlantRepository klantRepository, ArtikelRepository artikelRepository){
+    public FactuurService(FactuurRepository factuurRepository, KlantRepository klantRepository, ArtikelRepository artikelRepository, KlantService klantService){
         this.factuurRepository = factuurRepository;
-        this.orderRegelRepository = orderRegelRepository;
         this.klantRepository = klantRepository;
         this.artikelRepository = artikelRepository;
+        this.klantService = klantService;
+    }
+
+    public List<FactuurOutputDto> getAllFacturen(){
+        List<Factuur> facturenData = factuurRepository.findAll();
+        List<FactuurOutputDto> facturen = new ArrayList<>();
+        for(Factuur factuur : facturenData){
+            facturen.add(transferFactuurToDto(factuur));
+        }
+        return facturen;
+    }
+
+    public FactuurOutputDto getFactuur(Long id){
+        Optional<Factuur> optionalFactuur = factuurRepository.findById(id);
+        if(optionalFactuur.isPresent()){
+            return transferFactuurToDto(optionalFactuur.get());
+        }
+        else {
+            throw new NotFoundException("Deze factuur bestaat niet");
+        }
     }
 
     public Long createFactuur(FactuurInputDto factuurInput){
         Factuur factuur = new Factuur();
-        Klant klant = klantRepository.getReferenceById(factuurInput.getFactuurKlant());
+        Klant klant = klantRepository.getReferenceById(factuurInput.getKlantId());
         factuur.setFactuurKlant(klant);
         factuur.setFactuurDatum(factuurInput.getFactuurDatum());
         factuur.setBetaalDatum(factuurInput.getBetaalDatum());
@@ -70,5 +89,34 @@ public class FactuurService {
         }
         this.factuurRepository.save(factuur);
         return factuur.getFactuurId();
+    }
+
+    public FactuurOutputDto transferFactuurToDto(Factuur factuurData){
+        FactuurOutputDto factuurDto = new FactuurOutputDto();
+        factuurDto.setFactuurNummer(factuurData.getFactuurId());
+        factuurDto.setFactuurDatum(factuurData.getFactuurDatum());
+        factuurDto.setBetaalDatum(factuurData.getBetaalDatum());
+        KlantOutputDto klantOutput = klantService.transferKlantToDto(factuurData.getFactuurKlant());
+        factuurDto.setFactuurKlant(klantOutput);
+        List<OrderRegel> orderRegels = factuurData.getOrderRegels();
+        List<OrderRegelSummaryDto> orderRegelsOutput = new ArrayList<>();
+        for(OrderRegel orderRegel : orderRegels){
+            orderRegelsOutput.add(transferOrderRegelToSummaryDto(orderRegel));
+        }
+        factuurDto.setOrderRegels(orderRegelsOutput);
+        factuurDto.setSubTotaal(factuurData.getSubTotaal());
+        factuurDto.setBtwTotaal(factuurData.getBtwTotaal());
+        factuurDto.setKorting(factuurData.getKorting());
+        factuurDto.setTotaalPrijs(factuurData.getTotaalPrijs());
+        return factuurDto;
+    }
+
+    public OrderRegelSummaryDto transferOrderRegelToSummaryDto(OrderRegel orderRegelData){
+        OrderRegelSummaryDto orderRegelDto = new OrderRegelSummaryDto();
+        orderRegelDto.setArtikelNaam(orderRegelData.getOrderArtikel().getNaam());
+        orderRegelDto.setAantal(orderRegelData.getAantal());
+        orderRegelDto.setBtw(orderRegelData.getBtw());
+        orderRegelDto.setRegelPrijs(orderRegelData.getPrijs());
+        return orderRegelDto;
     }
 }

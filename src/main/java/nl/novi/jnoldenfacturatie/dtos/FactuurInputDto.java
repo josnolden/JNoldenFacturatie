@@ -2,54 +2,34 @@ package nl.novi.jnoldenfacturatie.dtos;
 
 import jakarta.validation.constraints.*;
 import java.util.Date;
+import java.util.List;
 
-public class FactuurInputDto {
-
-    @NotNull(message = "Datum is verplicht")
-    private Date factuurDatum;
-    private Date betaalDatum;
+public class FactuurInputDto extends FactuurBaseDto {
     @NotNull(message = "Klant is verplicht")
-    private Long factuurKlant;
+    private Long klantId;
     @Max(100) // korting mag niet hoger dan 100% zijn
     @Min(0) // korting mag niet negatief zijn
     private Integer kortingPercentage;
     @Min(1)
-    private OrderRegelInputDto[] orderRegels;
+    private List<OrderRegelInputDto> orderRegels;
 
-    public FactuurInputDto(Date factuurDatum, Date betaalDatum, Long klantId, Integer kortingPercentage, OrderRegelInputDto[] orderRegels){
-        this.factuurDatum = factuurDatum;
-        this.betaalDatum = betaalDatum;
-        this.factuurKlant = klantId;
+    public FactuurInputDto(Date factuurDatum, Date betaalDatum, Long klantId, Integer kortingPercentage, List<OrderRegelInputDto> orderRegels){
+        super(factuurDatum, betaalDatum);
         this.kortingPercentage = kortingPercentage;
+        this.klantId = klantId;
         this.orderRegels = orderRegels;
     }
 
     public FactuurInputDto(){
-
+        super();
     }
 
-    public Date getFactuurDatum() {
-        return factuurDatum;
+    public Long getKlantId() {
+        return klantId;
     }
 
-    public void setFactuurDatum(Date factuurDatum) {
-        this.factuurDatum = factuurDatum;
-    }
-
-    public Date getBetaalDatum() {
-        return betaalDatum;
-    }
-
-    public void setBetaalDatum(Date betaalDatum) {
-        this.betaalDatum = betaalDatum;
-    }
-
-    public Long getFactuurKlant() {
-        return factuurKlant;
-    }
-
-    public void setFactuurKlant(Long factuurKlant) {
-        this.factuurKlant = factuurKlant;
+    public void setKlantId(Long klantId) {
+        this.klantId = klantId;
     }
 
     public Integer getKortingPercentage() {
@@ -60,11 +40,11 @@ public class FactuurInputDto {
         this.kortingPercentage = kortingPercentage;
     }
 
-    public OrderRegelInputDto[] getOrderRegels() {
+    public List<OrderRegelInputDto> getOrderRegels() {
         return orderRegels;
     }
 
-    public void setOrderRegels(OrderRegelInputDto[] orderRegels) {
+    public void setOrderRegels(List<OrderRegelInputDto> orderRegels) {
         this.orderRegels = orderRegels;
     }
 }
