@@ -57,10 +57,13 @@ public class FactuurService {
         Double btwTotaal = 0.00;
         Double totaalPrijs = 0.00;
         List<OrderRegel> orderRegels = new ArrayList<>();
+        Integer regelNummer = 0;
         for(OrderRegelInputDto orderRegelInput : factuurInput.getOrderRegels()){
             OrderRegel orderRegel = new OrderRegel();
+            regelNummer++;
             Artikel artikel = artikelRepository.getReferenceById(orderRegelInput.getArtikelId());
             orderRegel.setOrderArtikel(artikel);
+            orderRegel.setRegelNummer(regelNummer);
             Integer aantal = orderRegelInput.getAantal();
             orderRegel.setAantal(aantal);
             Double regelTotaal = artikel.getPrijs() * aantal;
@@ -113,6 +116,7 @@ public class FactuurService {
 
     public OrderRegelSummaryDto transferOrderRegelToSummaryDto(OrderRegel orderRegelData){
         OrderRegelSummaryDto orderRegelDto = new OrderRegelSummaryDto();
+        orderRegelDto.setRegelNummer(orderRegelData.getRegelNummer());
         orderRegelDto.setArtikelNaam(orderRegelData.getOrderArtikel().getNaam());
         orderRegelDto.setAantal(orderRegelData.getAantal());
         orderRegelDto.setBtw(orderRegelData.getBtw());

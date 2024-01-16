@@ -9,6 +9,7 @@ public class OrderRegel {
     Long orderRegelId;
     @ManyToOne
     private Factuur basisFactuur;
+    private Integer regelNummer;
     @ManyToOne
     private Artikel orderArtikel;
     private Integer aantal;
@@ -29,6 +30,14 @@ public class OrderRegel {
 
     public void setBasisFactuur(Factuur basisFactuur) {
         this.basisFactuur = basisFactuur;
+    }
+
+    public Integer getRegelNummer() {
+        return regelNummer;
+    }
+
+    public void setRegelNummer(Integer regelNummer) {
+        this.regelNummer = regelNummer;
     }
 
     public Artikel getOrderArtikel() {
