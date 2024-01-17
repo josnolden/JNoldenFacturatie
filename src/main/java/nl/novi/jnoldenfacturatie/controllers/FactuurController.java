@@ -3,6 +3,7 @@ package nl.novi.jnoldenfacturatie.controllers;
 import jakarta.validation.Valid;
 import nl.novi.jnoldenfacturatie.dtos.FactuurInputDto;
 import nl.novi.jnoldenfacturatie.dtos.FactuurOutputDto;
+import nl.novi.jnoldenfacturatie.dtos.OrderRegelInputDto;
 import nl.novi.jnoldenfacturatie.services.FactuurService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +34,11 @@ public class FactuurController {
     public ResponseEntity<String> createFactuur(@Valid @RequestBody FactuurInputDto factuurInput){
         Long factuurNummer = factuurService.createFactuur(factuurInput);
         return ResponseEntity.created(null).body("Factuurnummer: "+factuurNummer);
+    }
+
+    @PutMapping("/facturen/{id}/addOrderRegel")
+    public ResponseEntity<String> addOrderRegelToFactuur(@PathVariable("id")Long id, @Valid @RequestBody OrderRegelInputDto orderRegelInput){
+        Long factuurNummer = factuurService.addOrderRegelToFactuur(id, orderRegelInput);
+        return ResponseEntity.ok().body("Factuurnummer: "+factuurNummer);
     }
 }

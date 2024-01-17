@@ -16,6 +16,7 @@ public class Factuur {
     private Date betaalDatum;
     private Double subTotaal;
     private Double btwTotaal;
+    private Integer kortingPercentage;
     private Double korting;
     private Double totaalPrijs;
     @OneToMany(mappedBy = "basisFactuur")
@@ -67,6 +68,14 @@ public class Factuur {
 
     public void setBtwTotaal(Double btwTotaal) {
         this.btwTotaal = btwTotaal;
+    }
+
+    public Integer getKortingPercentage() {
+        return kortingPercentage;
+    }
+
+    public void setKortingPercentage(Integer kortingPercentage) {
+        this.kortingPercentage = kortingPercentage;
     }
 
     public Double getKorting() {

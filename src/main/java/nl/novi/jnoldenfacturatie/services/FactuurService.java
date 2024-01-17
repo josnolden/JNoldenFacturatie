@@ -56,9 +56,7 @@ public class FactuurService {
         factuur.setFactuurKlant(klant);
         factuur.setFactuurDatum(factuurInput.getFactuurDatum());
         factuur.setBetaalDatum(factuurInput.getBetaalDatum());
-        Double subTotaal = 0.00;
-        Double btwTotaal = 0.00;
-        Double totaalPrijs = 0.00;
+        factuur.setKortingPercentage(factuurInput.getKortingPercentage());
         List<OrderRegel> orderRegels = new ArrayList<>();
         Integer regelNummer = 0;
         for(OrderRegelInputDto orderRegelInput : factuurInput.getOrderRegels()){
@@ -73,31 +71,45 @@ public class FactuurService {
             orderRegel.setPrijs(regelTotaal);
             Integer percentageInclusiefBtw = 100 + artikel.getBtwPercentage();
             Double regelBtw = (regelTotaal / percentageInclusiefBtw) * artikel.getBtwPercentage();
-            Double regelSubTotaal = regelTotaal - regelBtw;
             orderRegel.setBtw(regelBtw);
             orderRegels.add(orderRegel);
-            subTotaal += regelSubTotaal;
-            btwTotaal += regelBtw;
-            totaalPrijs += regelTotaal;
         }
         factuur.setOrderRegels(orderRegels);
-        factuur.setBtwTotaal(btwTotaal);
-        factuur.setSubTotaal(subTotaal);
-        Integer kortingPercentage = factuurInput.getKortingPercentage();
-        if(kortingPercentage > 0){
-            Double korting = (totaalPrijs / 100) * kortingPercentage;
-            factuur.setKorting(korting);
-            factuur.setTotaalPrijs(totaalPrijs - korting);
-        }
-        else {
-            factuur.setTotaalPrijs(totaalPrijs);
-            factuur.setKorting(0.00);
-        }
+        factuur = calculateFactuur(factuur);
         this.factuurRepository.save(factuur);
         for(OrderRegel orderRegel : orderRegels){
             orderRegelRepository.save(orderRegel);
         }
         return factuur.getFactuurId();
+    }
+
+    public Long addOrderRegelToFactuur(Long factuurId, OrderRegelInputDto orderRegelInput){
+        Optional<Factuur> optionalFactuur = factuurRepository.findById(factuurId);
+        if(optionalFactuur.isPresent()){
+            OrderRegel nieuweOrderRegel = new OrderRegel();
+            Factuur factuur = optionalFactuur.get();
+            List<OrderRegel> orderRegels = factuur.getOrderRegels();
+            nieuweOrderRegel.setRegelNummer(orderRegels.size() + 1);
+            Artikel artikel = artikelRepository.getReferenceById(orderRegelInput.getArtikelId());
+            nieuweOrderRegel.setOrderArtikel(artikel);
+            Integer aantal = orderRegelInput.getAantal();
+            nieuweOrderRegel.setAantal(aantal);
+            Double regelTotaal = artikel.getPrijs() * aantal;
+            nieuweOrderRegel.setPrijs(regelTotaal);
+            Integer percentageInclusiefBtw = 100 + artikel.getBtwPercentage();
+            Double regelBtw = (regelTotaal / percentageInclusiefBtw) * artikel.getBtwPercentage();
+            nieuweOrderRegel.setBtw(regelBtw);
+            nieuweOrderRegel.setBasisFactuur(factuur);
+            orderRegels.add(nieuweOrderRegel);
+            orderRegelRepository.save(nieuweOrderRegel);
+            factuur.setOrderRegels(orderRegels);
+            factuur = calculateFactuur(factuur);
+            this.factuurRepository.save(factuur);
+            return factuur.getFactuurId();
+        }
+        else {
+            throw new NotFoundException("Deze factuur bestaat niet");
+        }
     }
 
     public FactuurOutputDto transferFactuurToDto(Factuur factuurData){
@@ -128,5 +140,34 @@ public class FactuurService {
         orderRegelDto.setBtw(orderRegelData.getBtw());
         orderRegelDto.setRegelPrijs(orderRegelData.getPrijs());
         return orderRegelDto;
+    }
+
+    public Factuur calculateFactuur(Factuur factuur){
+        Double subTotaal = 0.00;
+        Double btwTotaal = 0.00;
+        Double totaalPrijs = 0.00;
+        for(OrderRegel orderRegel : factuur.getOrderRegels()){
+            Artikel artikel = orderRegel.getOrderArtikel();
+            Double regelTotaal = artikel.getPrijs() * orderRegel.getAantal();
+            Integer percentageInclusiefBtw = 100 + artikel.getBtwPercentage();
+            Double regelBtw = (regelTotaal / percentageInclusiefBtw) * artikel.getBtwPercentage();
+            Double regelSubTotaal = regelTotaal - regelBtw;
+            subTotaal += regelSubTotaal;
+            btwTotaal += regelBtw;
+            totaalPrijs += regelTotaal;
+        }
+        factuur.setBtwTotaal(btwTotaal);
+        factuur.setSubTotaal(subTotaal);
+        Integer kortingsPercentage = factuur.getKortingPercentage();
+        if(kortingsPercentage > 0){
+            Double korting = (totaalPrijs / 100) * kortingsPercentage;
+            factuur.setKorting(korting);
+            factuur.setTotaalPrijs(totaalPrijs - korting);
+        }
+        else {
+            factuur.setTotaalPrijs(totaalPrijs);
+            factuur.setKorting(0.00);
+        }
+        return factuur;
     }
 }
