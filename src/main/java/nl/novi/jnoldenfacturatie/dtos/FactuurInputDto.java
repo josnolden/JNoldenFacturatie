@@ -10,7 +10,7 @@ public class FactuurInputDto extends FactuurBaseDto {
     @Max(100) // korting mag niet hoger dan 100% zijn
     @Min(0) // korting mag niet negatief zijn
     private Integer kortingPercentage;
-    @Min(1)
+    @Size(message = "Factuur moet minstens een orderregel bevatten", min = 1)
     private List<OrderRegelInputDto> orderRegels;
 
     public FactuurInputDto(Date factuurDatum, Date betaalDatum, Long klantId, Integer kortingPercentage, List<OrderRegelInputDto> orderRegels){

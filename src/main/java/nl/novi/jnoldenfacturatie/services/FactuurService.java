@@ -8,6 +8,7 @@ import nl.novi.jnoldenfacturatie.models.OrderRegel;
 import nl.novi.jnoldenfacturatie.repositories.ArtikelRepository;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.KlantRepository;
+import nl.novi.jnoldenfacturatie.repositories.OrderRegelRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,12 +20,14 @@ public class FactuurService {
     private FactuurRepository factuurRepository;
     private KlantRepository klantRepository;
     private ArtikelRepository artikelRepository;
+    private OrderRegelRepository orderRegelRepository;
     private KlantService klantService;
 
-    public FactuurService(FactuurRepository factuurRepository, KlantRepository klantRepository, ArtikelRepository artikelRepository, KlantService klantService){
+    public FactuurService(FactuurRepository factuurRepository, KlantRepository klantRepository, ArtikelRepository artikelRepository, OrderRegelRepository orderRegelRepository, KlantService klantService){
         this.factuurRepository = factuurRepository;
         this.klantRepository = klantRepository;
         this.artikelRepository = artikelRepository;
+        this.orderRegelRepository = orderRegelRepository;
         this.klantService = klantService;
     }
 
@@ -91,6 +94,9 @@ public class FactuurService {
             factuur.setKorting(0.00);
         }
         this.factuurRepository.save(factuur);
+        for(OrderRegel orderRegel : orderRegels){
+            orderRegelRepository.save(orderRegel);
+        }
         return factuur.getFactuurId();
     }
 

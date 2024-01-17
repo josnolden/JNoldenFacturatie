@@ -91,5 +91,8 @@ public class Factuur {
 
     public void setOrderRegels(List<OrderRegel> orderRegels) {
         this.orderRegels = orderRegels;
+        for(OrderRegel orderRegel : orderRegels){
+            orderRegel.setBasisFactuur(this);
+        }
     }
 }
