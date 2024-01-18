@@ -20,6 +20,7 @@ public class Factuur {
     private Double korting;
     private Double totaalPrijs;
     @OneToMany(mappedBy = "basisFactuur")
+    @OrderBy
     List<OrderRegel> orderRegels;
 
     public Long getFactuurId() {

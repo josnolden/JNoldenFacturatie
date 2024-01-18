@@ -83,7 +83,7 @@ public class FactuurService {
         return factuur.getFactuurId();
     }
 
-    public Long addOrderRegelToFactuur(Long factuurId, OrderRegelInputDto orderRegelInput){
+    public FactuurOutputDto addOrderRegelToFactuur(Long factuurId, OrderRegelInputDto orderRegelInput){
         Optional<Factuur> optionalFactuur = factuurRepository.findById(factuurId);
         if(optionalFactuur.isPresent()){
             OrderRegel nieuweOrderRegel = new OrderRegel();
@@ -105,7 +105,44 @@ public class FactuurService {
             factuur.setOrderRegels(orderRegels);
             factuur = calculateFactuur(factuur);
             this.factuurRepository.save(factuur);
-            return factuur.getFactuurId();
+            return transferFactuurToDto(factuur);
+        }
+        else {
+            throw new NotFoundException("Deze factuur bestaat niet");
+        }
+    }
+
+    public FactuurOutputDto removeOrderRegelFromFactuur(Long factuurId, Integer regelNummer){
+        Optional<Factuur> optionalFactuur = factuurRepository.findById(factuurId);
+        if(optionalFactuur.isPresent()){
+            Factuur factuur = optionalFactuur.get();
+            List<OrderRegel> orderRegels = factuur.getOrderRegels();
+            List<OrderRegel> overGeblevenOrderRegels = new ArrayList<>();
+            boolean isOrderRegelPresent = false;
+            for(OrderRegel orderRegel : orderRegels){
+                if(orderRegel.getRegelNummer().equals(regelNummer)){
+                    isOrderRegelPresent = true;
+                    orderRegelRepository.delete(orderRegel);
+                }
+                else {
+                    overGeblevenOrderRegels.add(orderRegel);
+                }
+            }
+            if(isOrderRegelPresent == true){
+                factuur.setOrderRegels(overGeblevenOrderRegels);
+                Integer nieuweRegelNummer = 0;
+                for(OrderRegel orderRegel : overGeblevenOrderRegels){
+                    nieuweRegelNummer++;
+                    orderRegel.setRegelNummer(nieuweRegelNummer);
+                    orderRegelRepository.save(orderRegel);
+                }
+                factuur = calculateFactuur(factuur);
+                factuurRepository.save(factuur);
+                return transferFactuurToDto(factuur);
+            }
+            else {
+                throw new NotFoundException("Deze orderregel bestaat niet");
+            }
         }
         else {
             throw new NotFoundException("Deze factuur bestaat niet");

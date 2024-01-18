@@ -37,8 +37,14 @@ public class FactuurController {
     }
 
     @PutMapping("/facturen/{id}/addOrderRegel")
-    public ResponseEntity<String> addOrderRegelToFactuur(@PathVariable("id")Long id, @Valid @RequestBody OrderRegelInputDto orderRegelInput){
-        Long factuurNummer = factuurService.addOrderRegelToFactuur(id, orderRegelInput);
-        return ResponseEntity.ok().body("Factuurnummer: "+factuurNummer);
+    public ResponseEntity<FactuurOutputDto> addOrderRegelToFactuur(@PathVariable("id")Long id, @Valid @RequestBody OrderRegelInputDto orderRegelInput){
+        FactuurOutputDto factuur = factuurService.addOrderRegelToFactuur(id, orderRegelInput);
+        return ResponseEntity.ok().body(factuur);
+    }
+
+    @DeleteMapping("/facturen/{id}/removeOrderRegel/{regelNummer}")
+    public ResponseEntity<FactuurOutputDto> removeOrderRegelFromFactuur(@PathVariable("id")Long id, @PathVariable("regelNummer")Integer regelNummer){
+        FactuurOutputDto factuur = factuurService.removeOrderRegelFromFactuur(id, regelNummer);
+        return ResponseEntity.ok().body(factuur);
     }
 }
