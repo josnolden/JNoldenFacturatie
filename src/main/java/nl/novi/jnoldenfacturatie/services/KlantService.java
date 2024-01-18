@@ -3,10 +3,13 @@ package nl.novi.jnoldenfacturatie.services;
 import nl.novi.jnoldenfacturatie.dtos.AdresInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantOutputDto;
+import nl.novi.jnoldenfacturatie.exceptions.InExistingFactuurException;
 import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Adres;
+import nl.novi.jnoldenfacturatie.models.Factuur;
 import nl.novi.jnoldenfacturatie.models.Klant;
 import nl.novi.jnoldenfacturatie.repositories.AdresRepository;
+import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.KlantRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +19,12 @@ import java.util.Optional;
 
 @Service
 public class KlantService {
-    private AdresRepository adresRepository;
     private KlantRepository klantRepository;
+    private FactuurRepository factuurRepository;
 
-    public KlantService(AdresRepository adresRepository, KlantRepository klantRepository){
-        this.adresRepository = adresRepository;
+    public KlantService(KlantRepository klantRepository, FactuurRepository factuurRepository){
         this.klantRepository = klantRepository;
+        this.factuurRepository = factuurRepository;
     }
 
     public List<KlantOutputDto> getAllKlanten(){
@@ -63,6 +66,12 @@ public class KlantService {
     public void deleteKlant(Long id){
         Optional<Klant> optionalKlant = klantRepository.findById(id);
         if(optionalKlant.isPresent()){
+            List<Factuur> bestaandeFacturen = factuurRepository.findAll();
+            for(Factuur factuur : bestaandeFacturen){
+                if(factuur.getFactuurKlant().getKlantId().equals(id)){
+                    throw new InExistingFactuurException("Deze klant is in gebruik door een of meer facturen");
+                }
+            }
             klantRepository.deleteById(id);
         }
         else {

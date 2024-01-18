@@ -60,7 +60,7 @@ public class Factuur {
     }
 
     public void setSubTotaal(Double subTotaal) {
-        this.subTotaal = subTotaal;
+        this.subTotaal = Math.round(subTotaal*100.0)/100.0;
     }
 
     public Double getBtwTotaal() {
@@ -68,7 +68,7 @@ public class Factuur {
     }
 
     public void setBtwTotaal(Double btwTotaal) {
-        this.btwTotaal = btwTotaal;
+        this.btwTotaal = Math.round(btwTotaal*100.0)/100.0;
     }
 
     public Integer getKortingPercentage() {
@@ -84,7 +84,7 @@ public class Factuur {
     }
 
     public void setKorting(Double korting) {
-        this.korting = korting;
+        this.korting = Math.round(korting*100.0)/100.0;
     }
 
     public Double getTotaalPrijs() {
@@ -92,7 +92,7 @@ public class Factuur {
     }
 
     public void setTotaalPrijs(Double totaalPrijs) {
-        this.totaalPrijs = totaalPrijs;
+        this.totaalPrijs = Math.round(totaalPrijs*100.0)/100.0;
     }
 
     public List<OrderRegel> getOrderRegels() {

@@ -1,9 +1,12 @@
 package nl.novi.jnoldenfacturatie.services;
 import nl.novi.jnoldenfacturatie.dtos.ArtikelInputDto;
 import nl.novi.jnoldenfacturatie.dtos.ArtikelOutputDto;
+import nl.novi.jnoldenfacturatie.exceptions.InExistingFactuurException;
 import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Artikel;
+import nl.novi.jnoldenfacturatie.models.OrderRegel;
 import nl.novi.jnoldenfacturatie.repositories.ArtikelRepository;
+import nl.novi.jnoldenfacturatie.repositories.OrderRegelRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,9 +16,11 @@ import java.util.Optional;
 @Service
 public class ArtikelService {
     private ArtikelRepository artikelRepository;
+    private OrderRegelRepository orderRegelRepository;
 
-    public ArtikelService(ArtikelRepository repository){
-        this.artikelRepository = repository;
+    public ArtikelService(ArtikelRepository artikelRepository, OrderRegelRepository orderRegelRepository){
+        this.artikelRepository = artikelRepository;
+        this.orderRegelRepository = orderRegelRepository;
     }
 
     public List<ArtikelOutputDto> getAllArtikelen(){
@@ -57,6 +62,12 @@ public class ArtikelService {
     public void deleteArtikel(Long id){
         Optional<Artikel> optionalArtikel = artikelRepository.findById(id);
         if(optionalArtikel.isPresent()){
+            List<OrderRegel> bestaandeOrderRegels = orderRegelRepository.findAll();
+            for(OrderRegel orderRegel : bestaandeOrderRegels){
+                if(orderRegel.getOrderArtikel().getArtikelId().equals(id)){
+                    throw new InExistingFactuurException("Dit artikel is in gebruik door een of meer facturen");
+                }
+            }
             artikelRepository.deleteById(id);
         }
         else {

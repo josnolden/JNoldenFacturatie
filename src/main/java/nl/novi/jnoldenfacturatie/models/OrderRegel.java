@@ -61,7 +61,7 @@ public class OrderRegel {
     }
 
     public void setPrijs(Double prijs) {
-        this.prijs = prijs;
+        this.prijs = Math.round(prijs*100.0)/100.0;
     }
 
     public Double getBtw() {
@@ -69,6 +69,6 @@ public class OrderRegel {
     }
 
     public void setBtw(Double btw) {
-        this.btw = btw;
+        this.btw = Math.round(btw*100.0)/100.0;
     }
 }
