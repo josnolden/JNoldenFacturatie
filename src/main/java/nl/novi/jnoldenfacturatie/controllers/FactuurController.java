@@ -36,6 +36,12 @@ public class FactuurController {
         return ResponseEntity.created(null).body("Factuurnummer: "+factuurNummer);
     }
 
+    @DeleteMapping("/facturen/{id}")
+    public ResponseEntity<String> deleteFactuur(@PathVariable("id")Long id){
+        factuurService.deleteFactuur(id);
+        return ResponseEntity.ok().body("Factuur en orderregels verwijderd");
+    }
+
     @PutMapping("/facturen/{id}/addOrderRegel")
     public ResponseEntity<FactuurOutputDto> addOrderRegelToFactuur(@PathVariable("id")Long id, @Valid @RequestBody OrderRegelInputDto orderRegelInput){
         FactuurOutputDto factuur = factuurService.addOrderRegelToFactuur(id, orderRegelInput);

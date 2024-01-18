@@ -83,6 +83,20 @@ public class FactuurService {
         return factuur.getFactuurId();
     }
 
+    public void deleteFactuur(Long factuurId){
+        Optional<Factuur> optionalFactuur = factuurRepository.findById(factuurId);
+        if(optionalFactuur.isPresent()){
+            Factuur factuur = optionalFactuur.get();
+            for(OrderRegel orderRegel : factuur.getOrderRegels()){
+                orderRegelRepository.delete(orderRegel);
+            }
+            factuurRepository.delete(factuur);
+        }
+        else {
+            throw new NotFoundException("Deze factuur bestaat niet");
+        }
+    }
+
     public FactuurOutputDto addOrderRegelToFactuur(Long factuurId, OrderRegelInputDto orderRegelInput){
         Optional<Factuur> optionalFactuur = factuurRepository.findById(factuurId);
         if(optionalFactuur.isPresent()){
