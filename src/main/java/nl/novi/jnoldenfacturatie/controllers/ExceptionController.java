@@ -1,5 +1,6 @@
 package nl.novi.jnoldenfacturatie.controllers;
 
+import nl.novi.jnoldenfacturatie.exceptions.ExistingUsernameException;
 import nl.novi.jnoldenfacturatie.exceptions.InExistingFactuurException;
 import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,11 @@ public class ExceptionController {
 
     @ExceptionHandler(value= InExistingFactuurException.class)
     public ResponseEntity<Object> exception(InExistingFactuurException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value= ExistingUsernameException.class)
+    public ResponseEntity<Object> exception(ExistingUsernameException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
