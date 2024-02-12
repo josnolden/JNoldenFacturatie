@@ -3,12 +3,15 @@ import nl.novi.jnoldenfacturatie.dtos.FactuurOutputDto;
 import nl.novi.jnoldenfacturatie.dtos.OrderRegelSummaryDto;
 import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Factuur;
+import nl.novi.jnoldenfacturatie.models.Logo;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
+import nl.novi.jnoldenfacturatie.repositories.LogoRepository;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -18,10 +21,12 @@ import java.util.Optional;
 @Service
 public class PdfService {
     private FactuurRepository factuurRepository;
+    private LogoRepository logoRepository;
     private FactuurService factuurService;
 
-    public PdfService(FactuurRepository factuurRepository, FactuurService factuurService){
+    public PdfService(FactuurRepository factuurRepository, LogoRepository logoRepository, FactuurService factuurService){
         this.factuurRepository = factuurRepository;
+        this.logoRepository = logoRepository;
         this.factuurService = factuurService;
     }
 
@@ -46,9 +51,8 @@ public class PdfService {
         PDDocument factuurPdf = new PDDocument();
         PDPage factuurPagina = new PDPage();
         factuurPdf.addPage(factuurPagina);
-        PDPageContentStream contentStream;
 
-        contentStream = new PDPageContentStream(factuurPdf, factuurPagina);
+        PDPageContentStream contentStream = new PDPageContentStream(factuurPdf, factuurPagina);
         contentStream.beginText();
         contentStream.setFont(font, 24);
         contentStream.newLineAtOffset(250, 770);
@@ -159,6 +163,15 @@ public class PdfService {
         contentStream.endText();
 
         contentStream.close();
+
+        Optional<Logo> logoOptional = logoRepository.findById(Long.valueOf(1));
+        if(logoOptional.isPresent()){
+            Logo logo = logoOptional.get();
+            PDImageXObject pdImage = PDImageXObject.createFromByteArray(factuurPdf, logo.getAfbeeldingData(), "Logo");
+            PDPageContentStream logoStream = new PDPageContentStream(factuurPdf, factuurPagina, PDPageContentStream.AppendMode.APPEND, true, true);
+            logoStream.drawImage(pdImage, 450, 650);
+            logoStream.close();
+        }
 
         factuurPdf.save(output);
         factuurPdf.close();
