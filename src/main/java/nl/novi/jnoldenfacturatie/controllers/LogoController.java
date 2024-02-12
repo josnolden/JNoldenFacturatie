@@ -16,8 +16,8 @@ public class LogoController {
     }
 
     @PostMapping("/logo")
-    public ResponseEntity<String> uploadLogo(@RequestBody MultipartFile file) throws IOException {
-        logoService.uploadLogo(file);
+    public ResponseEntity<String> uploadLogo(@RequestBody MultipartFile logo) throws IOException {
+        logoService.uploadLogo(logo);
         return ResponseEntity.ok().body("Logo geüpload");
     }
 
