@@ -169,7 +169,7 @@ public class PdfService {
             Logo logo = logoOptional.get();
             PDImageXObject pdImage = PDImageXObject.createFromByteArray(factuurPdf, logo.getAfbeeldingData(), "Logo");
             PDPageContentStream logoStream = new PDPageContentStream(factuurPdf, factuurPagina, PDPageContentStream.AppendMode.APPEND, true, true);
-            logoStream.drawImage(pdImage, 450, 650);
+            logoStream.drawImage(pdImage, 450, 660, 100, 100);
             logoStream.close();
         }
 
