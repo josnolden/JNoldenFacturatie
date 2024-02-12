@@ -6,6 +6,7 @@ import nl.novi.jnoldenfacturatie.models.Factuur;
 import nl.novi.jnoldenfacturatie.models.Logo;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.LogoRepository;
+import nl.novi.jnoldenfacturatie.utilities.CompressionUtility;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -23,11 +24,13 @@ public class PdfService {
     private FactuurRepository factuurRepository;
     private LogoRepository logoRepository;
     private FactuurService factuurService;
+    private CompressionUtility compressionUtility;
 
-    public PdfService(FactuurRepository factuurRepository, LogoRepository logoRepository, FactuurService factuurService){
+    public PdfService(FactuurRepository factuurRepository, LogoRepository logoRepository, FactuurService factuurService, CompressionUtility compressionUtility){
         this.factuurRepository = factuurRepository;
         this.logoRepository = logoRepository;
         this.factuurService = factuurService;
+        this.compressionUtility = compressionUtility;
     }
 
     public ByteArrayOutputStream getFactuurPdf(Long id){
@@ -167,7 +170,7 @@ public class PdfService {
         Optional<Logo> logoOptional = logoRepository.findById(Long.valueOf(1));
         if(logoOptional.isPresent()){
             Logo logo = logoOptional.get();
-            PDImageXObject pdImage = PDImageXObject.createFromByteArray(factuurPdf, logo.getAfbeeldingData(), "Logo");
+            PDImageXObject pdImage = PDImageXObject.createFromByteArray(factuurPdf, compressionUtility.decompress(logo.getAfbeeldingData()), "Logo");
             PDPageContentStream logoStream = new PDPageContentStream(factuurPdf, factuurPagina, PDPageContentStream.AppendMode.APPEND, true, true);
             logoStream.drawImage(pdImage, 450, 660, 100, 100);
             logoStream.close();
