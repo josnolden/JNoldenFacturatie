@@ -3,8 +3,10 @@ package nl.novi.jnoldenfacturatie.services;
 import nl.novi.jnoldenfacturatie.dtos.AdresInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantInputDto;
 import nl.novi.jnoldenfacturatie.dtos.KlantOutputDto;
+import nl.novi.jnoldenfacturatie.exceptions.InExistingFactuurException;
 import nl.novi.jnoldenfacturatie.exceptions.NotFoundException;
 import nl.novi.jnoldenfacturatie.models.Adres;
+import nl.novi.jnoldenfacturatie.models.Factuur;
 import nl.novi.jnoldenfacturatie.models.Klant;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.KlantRepository;
@@ -113,15 +115,15 @@ class KlantServiceTest {
     }
 
     @Test
-    void createKlantDoesSomething() {
+    void createKlantDoesNotThrow() {
         // arrange
         when(klantRepositoryMock.save(Mockito.any(Klant.class))).thenReturn(null);
 
         // act
-        Long createdKlantId = klantService.createKlant(testKlantInput);
+        //Long createdKlantId = klantService.createKlant(testKlantInput);
 
         // assert
-        assertNull(createdKlantId);
+        assertDoesNotThrow(() -> klantService.createKlant(testKlantInput));
     }
 
     @Test
@@ -140,7 +142,63 @@ class KlantServiceTest {
     }
 
     @Test
-    void deleteKlant() {
+    void updateNonExistingKlantThrowsError(){
+        // arrange
+        when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
+
+        // act
+        //klantService.updateKlant(1L);
+
+        // assert
+        assertThrows(NotFoundException.class, () -> klantService.updateKlant(1L, testKlantInput));
+    }
+
+    @Test
+    void deleteExistingKlantDoesNotThrowError() {
+        // arrange
+        when(klantRepositoryMock.findById(1L)).thenReturn(Optional.of(testKlant));
+        Factuur testFactuur = new Factuur();
+        Klant andereTestKlant = new Klant();
+        andereTestKlant.setKlantId(2L);
+        testFactuur.setFactuurKlant(andereTestKlant);
+        List<Factuur> testFactuurLijst = new ArrayList<>();
+        testFactuurLijst.add(testFactuur);
+        when(factuurRepositoryMock.findAll()).thenReturn(testFactuurLijst);
+
+        // act
+        //klantService.deleteKlant(1L);
+
+        // assert
+        assertDoesNotThrow(() -> klantService.deleteKlant(1L));
+    }
+
+    @Test
+    void deleteExistingKlantWithFactuurThrowsError(){
+        // arrange
+        when(klantRepositoryMock.findById(1L)).thenReturn(Optional.of(testKlant));
+        Factuur testFactuur = new Factuur();
+        testFactuur.setFactuurKlant(testKlant);
+        List<Factuur> testFactuurLijst = new ArrayList<>();
+        testFactuurLijst.add(testFactuur);
+        when(factuurRepositoryMock.findAll()).thenReturn(testFactuurLijst);
+
+        // act
+        //klantService.deleteKlant(1L);
+
+        // assert
+        assertThrows(InExistingFactuurException.class, () -> klantService.deleteKlant(1L));
+    }
+
+    @Test
+    void deleteNonExistingKlantThrowsError(){
+        // arrange
+        when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
+
+        // act
+        //klantService.deleteKlant(1L);
+
+        // assert
+        assertThrows(NotFoundException.class, () -> klantService.deleteKlant(1L));
     }
 
     @Test
@@ -157,7 +215,15 @@ class KlantServiceTest {
     }
 
     @Test
-    void transferKlantToDto() {
+    void transferKlantToDtoReturnsValidData() {
+        // arrange
+
+        // act
+        KlantOutputDto klantOutput = klantService.transferKlantToDto(testKlant);
+
+        // assert
+        assertEquals("Jan", klantOutput.getVoornaam());
+        assertEquals("Teststraat", klantOutput.getAdres().getStraat());
     }
 
     @Test
