@@ -90,7 +90,7 @@ public class GebruikerService {
         }
     }
 
-    private GebruikerOutputDto transferGebruikerToDto(Gebruiker gebruiker){
+    public GebruikerOutputDto transferGebruikerToDto(Gebruiker gebruiker){
         GebruikerOutputDto gebruikerOutput = new GebruikerOutputDto();
         gebruikerOutput.setGebruikersnaam(gebruiker.getGebruikersnaam());
         String gebruikersRol = gebruiker.getGebruikersRol().getGebruikersRol();

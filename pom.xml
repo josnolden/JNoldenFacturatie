@@ -10,7 +10,7 @@
     </parent>
     <groupId>nl.novi</groupId>
     <artifactId>JNoldenFacturatie</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5</version>
     <name>JNoldenFacturatie</name>
     <description>JNoldenFacturatie</description>
     <properties>
