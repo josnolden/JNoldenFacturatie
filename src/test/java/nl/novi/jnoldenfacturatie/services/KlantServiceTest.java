@@ -11,6 +11,7 @@ import nl.novi.jnoldenfacturatie.models.Klant;
 import nl.novi.jnoldenfacturatie.repositories.FactuurRepository;
 import nl.novi.jnoldenfacturatie.repositories.KlantRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -73,6 +74,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Alle klanten worden gevonden")
     void getAllKlantenReturnsTestKlant() {
         // arrange
         when(klantRepositoryMock.findAll()).thenReturn(klantList);
@@ -89,6 +91,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Bestaande klant wordt gevonden")
     void getKlantReturnsTestKlant() {
         // arrange
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.of(testKlant));
@@ -103,6 +106,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Niet bestaande klant geeft foutmelding")
     void getNonExistingKlantReturnsError() {
         // arrange
         when(klantRepositoryMock.findById(2L)).thenReturn(Optional.empty());
@@ -115,6 +119,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant aanmaken werkt")
     void createKlantDoesNotThrow() {
         // arrange
         when(klantRepositoryMock.save(Mockito.any(Klant.class))).thenReturn(null);
@@ -127,6 +132,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant updaten werkt de eigenschappen bij")
     void updateKlantOverwritesTheProperties() {
         // arrange
         when(klantRepositoryMock.findById(anyLong())).thenReturn(Optional.of(testKlant));
@@ -142,6 +148,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Niet bestaande klant updaten geeft foutmelding")
     void updateNonExistingKlantThrowsError(){
         // arrange
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
@@ -154,6 +161,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant verwijderen werkt")
     void deleteExistingKlantDoesNotThrowError() {
         // arrange
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.of(testKlant));
@@ -173,6 +181,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant met bestaande factuur verwijderen geeft foutmelding")
     void deleteExistingKlantWithFactuurThrowsError(){
         // arrange
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.of(testKlant));
@@ -190,6 +199,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Niet bestaande klant verwijderen geeft foutmelding")
     void deleteNonExistingKlantThrowsError(){
         // arrange
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
@@ -202,6 +212,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant opslaan geeft ingevulde klant terug")
     void saveKlantReturnsFilledInKlant() {
         // arrange
         when(klantRepositoryMock.save(Mockito.any(Klant.class))).thenReturn(null);
@@ -215,6 +226,7 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Klant overzetten geeft juiste data terug")
     void transferKlantToDtoReturnsValidData() {
         // arrange
 
@@ -227,6 +239,15 @@ class KlantServiceTest {
     }
 
     @Test
+    @DisplayName("Adres overzetten geeft juiste data terug")
     void transferAdresToDto() {
+        // arrange
+
+        // act
+        AdresInputDto adresOutput = klantService.transferAdresToDto(testAdres);
+
+        // assert
+        assertEquals("Teststraat", adresOutput.getStraat());
+        assertEquals("België", adresOutput.getLand());
     }
 }
