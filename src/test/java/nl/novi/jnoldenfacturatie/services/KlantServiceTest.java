@@ -35,7 +35,6 @@ class KlantServiceTest {
     KlantInputDto testKlantInput = new KlantInputDto();
     Adres testAdres = new Adres();
     AdresInputDto testAdresInput = new AdresInputDto();
-    List<Klant> klantList = new ArrayList<>();
 
     @Mock
     KlantRepository klantRepositoryMock;
@@ -69,14 +68,14 @@ class KlantServiceTest {
         testKlantInput.setAchternaam("Puk");
         testKlantInput.setMailadres("blabla@dinges.nl");
         testKlantInput.setAdres(testAdresInput);
-
-        klantList.add(testKlant);
     }
 
     @Test
     @DisplayName("Alle klanten worden gevonden")
     void getAllKlantenReturnsTestKlant() {
         // arrange
+        List<Klant> klantList = new ArrayList<>();
+        klantList.add(testKlant);
         when(klantRepositoryMock.findAll()).thenReturn(klantList);
 
         // act
@@ -154,10 +153,10 @@ class KlantServiceTest {
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
 
         // act
-        //klantService.updateKlant(1L);
+        var error = assertThrows(NotFoundException.class, () -> klantService.updateKlant(1L, testKlantInput));
 
         // assert
-        assertThrows(NotFoundException.class, () -> klantService.updateKlant(1L, testKlantInput));
+        assertEquals("Deze klant bestaat niet", error.getMessage());
     }
 
     @Test
@@ -192,10 +191,10 @@ class KlantServiceTest {
         when(factuurRepositoryMock.findAll()).thenReturn(testFactuurLijst);
 
         // act
-        //klantService.deleteKlant(1L);
+        var error = assertThrows(InExistingFactuurException.class, () -> klantService.deleteKlant(1L));
 
         // assert
-        assertThrows(InExistingFactuurException.class, () -> klantService.deleteKlant(1L));
+        assertEquals("Deze klant is in gebruik door een of meer facturen", error.getMessage());
     }
 
     @Test
@@ -205,10 +204,10 @@ class KlantServiceTest {
         when(klantRepositoryMock.findById(1L)).thenReturn(Optional.empty());
 
         // act
-        //klantService.deleteKlant(1L);
+        var error = assertThrows(NotFoundException.class, () -> klantService.deleteKlant(1L));
 
         // assert
-        assertThrows(NotFoundException.class, () -> klantService.deleteKlant(1L));
+        assertEquals("Deze klant bestaat niet", error.getMessage());
     }
 
     @Test
