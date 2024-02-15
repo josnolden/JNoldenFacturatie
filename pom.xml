@@ -10,7 +10,7 @@
     </parent>
     <groupId>nl.novi</groupId>
     <artifactId>JNoldenFacturatie</artifactId>
-    <version>0.5</version>
+    <version>0.9</version>
     <name>JNoldenFacturatie</name>
     <description>JNoldenFacturatie</description>
     <properties>
@@ -76,6 +76,11 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>2.0.29</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
