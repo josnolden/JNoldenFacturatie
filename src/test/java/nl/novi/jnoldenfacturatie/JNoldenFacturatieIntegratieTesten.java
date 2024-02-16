@@ -1,5 +1,6 @@
 package nl.novi.jnoldenfacturatie;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,6 +26,7 @@ class JNoldenFacturatieIntegratieTesten {
     MockMvc mockMvc;
 
     @Test
+    @DisplayName("Factuur wordt correct aangemaakt")
     void shouldCorrectlyCreateFactuur() throws Exception {
         String jsonBody = """
                 {
@@ -53,12 +55,12 @@ class JNoldenFacturatieIntegratieTesten {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andReturn();
 
-        String factuurnummer = respons.getResponse().getContentAsString().substring(15);
         assertThat(respons.getResponse().getContentAsString(), matchesPattern("Factuurnummer: [012]"));
 
     }
 
     @Test
+    @DisplayName("Aangemaakte factuur wordt correct teruggegeven")
     void shouldReturnCorrectFactuur() throws Exception {
         String jsonBody = """
                 {
